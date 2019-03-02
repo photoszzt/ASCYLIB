@@ -3,10 +3,10 @@
 ################
 
 # Settings for TBB and URCU
-TBB_LIBS      ?= /home/trigonak/code/tbb42_20140122oss/build/linux_intel64_gcc_cc4.8_libc2.17_kernel3.11.0_release
-TBB_INCLUDES  ?= /home/trigonak/code/tbb42_20140122oss/include
+TBB_LIBS      ?= /home/zhitingz/tbb/tbb2019_20181203oss/lib/intel64/gcc4.7/
+TBB_INCLUDES  ?= /home/zhitingz/tbb/tbb2019_20181203oss/include
 
-URCU_PATH     ?= /home/trigonak/code/urcu #path to the URCU installation 
+URCU_PATH     ?= /usr/include/ #path to the URCU installation
 
 # Compiler
 SOLARIS_CC1 	?= /opt/csw/bin/gcc
@@ -175,6 +175,12 @@ ifeq ($(PC_NAME), maglite)
     PLATFORM_KNOWN = 1
     CC = $(SOLARIS_CC1)
     CFLAGS += -DMAGLITE
+endif
+
+ifeq ($(PC_NAME), mozart)
+    PLATFORM_KNOWN = 1
+    CFLAGS += -DMOZART -DPLATFORM_MCORE
+    PLATFORM_NUMA = 1
 endif
 
 ifeq ($(PC_NAME), ol-collab1)

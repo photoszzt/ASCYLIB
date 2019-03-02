@@ -239,12 +239,12 @@ zipf_get_rand_array(double zipf_alpha,
     }
 
 
-  struct zipf_arr* za = malloc(sizeof(struct zipf_arr) + num_vals * sizeof(int));
+  struct zipf_arr* za = (struct zipf_arr*) malloc(sizeof(struct zipf_arr) + num_vals * sizeof(int));
   assert(za != NULL);
   za->size = num_vals;
   za->max = max;
   za->i = 0;
-  
+
   char fname[128];
   sprintf(fname, "data/zipf_rand_%d_%zu_%d.dat", id, num_vals, max);
   //  printf("--- %s\n", fname);

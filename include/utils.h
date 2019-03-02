@@ -93,6 +93,22 @@ extern "C" {
     return ((x != 0) && !(x & (x - 1)));
   }
 
+#ifdef MOZART
+#  define NUMBER_OF_SOCKETS 2
+#  define CORES_PER_SOCKET 8
+#  define CACHE_LINE_SIZE 64
+#  define NOP_DURATION 2
+  static uint8_t __attribute__ ((unused)) the_cores[] =
+  {
+    0, 1, 2, 3, 4, 5, 6, 7,
+    8, 9, 10, 11, 12, 13, 14, 15,
+  };
+  static uint8_t __attribute__ ((unused)) the_sockets[] = {
+    0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1,
+  };
+#endif // MOZART
+
 
 #ifdef T44
 #  define NUMBER_OF_SOCKETS 4

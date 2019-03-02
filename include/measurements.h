@@ -14,7 +14,9 @@ extern "C" {
 #include "getticks.h"
 
 #ifndef REF_SPEED_GHZ
-#  if defined(PLATFORM_MCORE) | defined(XEON) | defined(OPTERON)
+#  if defined(MOZART)
+#    define REF_SPEED_GHZ           2.6
+#  elif defined(PLATFORM_MCORE) | defined(XEON) | defined(OPTERON)
 #    define REF_SPEED_GHZ           2.1
 #  elif defined(HASWELL)
 #    define REF_SPEED_GHZ           3

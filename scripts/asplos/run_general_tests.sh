@@ -38,11 +38,11 @@ source scripts/lock_exec;
 ll_algos="./${ub}/lb-ll_lazy ./${ub}/lb-ll_coupling ./${ub}/lb-ll_pugh ./${ub}/lb-ll_copy ./${ub}/lf-ll_harris ./${ub}/lf-ll_harris_opt ./${ub}/lf-ll_michael ./${ub}/sq-ll"
 do_ll=0
 sl_algos="./${ub}/lb-sl_herlihy ./${ub}/lb-sl_pugh ./${ub}/lf-sl_fraser ./${ub}/lf-sl_herlihy  ./${ub}/sq-sl"
-do_sl=1
+do_sl=0
 ht_algos="./${ub}/lb-ht_tbb ./${ub}/lb-ht_java ./${ub}/lb-ht_copy ./${ub}/lb-ht_lazy_gl ./${ub}/lb-ht_coupling_gl ./${ub}/lb-ht_pugh_gl ./${ub}/lf-ht_harris ./${ub}/lf-ht_rcu ./${ub}/sq-ht"
 do_ht=0
 bst_algos="./${ub}/lf-bst_ellen ./${ub}/lb-bst-drachsler ./${ub}/lf-bst-aravind ./${ub}/lf-bst-howley ./${ub}/lb-bst_bronson ./${ub}/sq-bst_external ./${ub}/sq-bst_internal"
-do_bst=0
+do_bst=1
 
 num_repetitions=11
 
@@ -58,13 +58,13 @@ base_update=10
 high_initial=512
 high_range=1024
 high_update=25
-high_cores=20
+high_cores=16
 
 #parameters for the low contention experiment
 low_initial=16384
 low_range=32768
 low_update=10
-low_cores=20
+low_cores=16
 
 compute_val() {
     array1=$1
@@ -101,7 +101,7 @@ run_test() {
     shift
     params=$@
     array=()
-    for i in `seq 1 ${num_repetitions}`; do 
+    for i in `seq 1 ${num_repetitions}`; do
         thr=$(${timeout} ${run_script_timeout} ${executable} ${params} | grep "Mops" | cut -d' ' -f2);
         if [ $? -eq 0 ]
         then
@@ -131,7 +131,7 @@ test_structure() {
         echo "${namemap[${algo}]} " > ./data/temp
         for c in ${cores}; do
             printf "${c} "
-            throughput=$(run_test ${algo} -d${def_duration} -n${c} -i${base_initial} -r${base_range} -u${base_update}) 
+            throughput=$(run_test ${algo} -d${def_duration} -n${c} -i${base_initial} -r${base_range} -u${base_update})
             echo "${uname} ${namemap[${algo}]} ${c} ${throughput}" >> ./data/common_${struct}_${uname}.txt
             echo "${throughput}" >> ./data/temp
         done
@@ -140,17 +140,17 @@ test_structure() {
         printf "\n"
 #hight contention case
         echo "   high contention..."
-        throughput_one=$(run_test ${algo} -d${def_duration} -n1 -i${high_initial} -r${high_range} -u${high_update}) 
-        throughput=$(run_test ${algo} -d${def_duration} -n${high_cores} -i${high_initial} -r${high_range} -u${high_update}) 
+        throughput_one=$(run_test ${algo} -d${def_duration} -n1 -i${high_initial} -r${high_range} -u${high_update})
+        throughput=$(run_test ${algo} -d${def_duration} -n${high_cores} -i${high_initial} -r${high_range} -u${high_update})
         scal=$(echo "${throughput}/${throughput_one}" | bc -l);
         echo "${uname} high ${namemap[${algo}]} ${throughput} ${scal}" >> ./data/extremes_${struct}_${uname}.txt
 #low contention case
         echo "   low contention..."
-        throughput_one=$(run_test ${algo} -d${def_duration} -n1 -i${low_initial} -r${low_range} -u${low_update}) 
-        throughput=$(run_test ${algo} -d${def_duration} -n${low_cores} -i${low_initial} -r${low_range} -u${low_update}) 
+        throughput_one=$(run_test ${algo} -d${def_duration} -n1 -i${low_initial} -r${low_range} -u${low_update})
+        throughput=$(run_test ${algo} -d${def_duration} -n${low_cores} -i${low_initial} -r${low_range} -u${low_update})
         scal=$(echo "${throughput}/${throughput_one}" | bc -l);
         echo "${uname} low ${namemap[${algo}]} ${throughput} ${scal}" >> ./data/extremes_${struct}_${uname}.txt
-        else 
+        else
             echo "$algo not found"
         fi
     done
